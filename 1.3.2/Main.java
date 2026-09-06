@@ -146,7 +146,7 @@ public class Main {
 
         if (currentSize == 6) {
             Subset oddSubset = new Subset(current.clone(), currentSize);
-            buckets.add(oddSubset);
+            buckets.add(oddSubset); // Läggs i en följande struktur bucket[sum][exp3][exp5][exp7]
             return;
         }
 
@@ -176,15 +176,14 @@ public class Main {
     public static Result findSolutions(ArrayList<ArrayList<Subset>> evenBuckets, OddSubsetBucket oddBuckets) {
         Result result = new Result();
 
-        for (int evenSum = 0; evenSum < evenBuckets.size(); evenSum++) {
+        // OBS: börjar på 30 eftersom minsta möjliga element summa är 30, 1-29 är tomma.
+        for (int evenSum = 30; evenSum < evenBuckets.size(); evenSum++) {
+
+            // Tar alla delmängder med summan evenSum och sparar i en currentEvenBucket
             ArrayList<Subset> currentEvenBucket = evenBuckets.get(evenSum);
-
-            if (currentEvenBucket.isEmpty()) {
-                continue;
-            }
-
             int oddSum = 330 - evenSum;
 
+            //
             if (oddSum < 0 || oddSum > 324) {
                 continue;
             }
@@ -203,18 +202,11 @@ public class Main {
 
                         for (int exp7 = need7; exp7 <= 1; exp7++) {
 
-                            ArrayList<Subset> validOddSubsets = oddBuckets.get(
-                                    oddSum,
-                                    exp3,
-                                    exp5,
-                                    exp7);
+                            // När vi kommit hit vet vi att alla lösningar i denna bucket är giltiga
+                            ArrayList<Subset> validOddSubsets = oddBuckets.get(oddSum, exp3, exp5, exp7);
 
                             for (Subset oddSubset : validOddSubsets) {
-
-                                processSolution(
-                                        evenSubset,
-                                        oddSubset,
-                                        result);
+                                processSolution(evenSubset, oddSubset, result);
                             }
                         }
                     }
@@ -224,10 +216,13 @@ public class Main {
         return result;
     }
 
+    // Hjälp funktion räknar antalet delmängder, lxikografiskt minsta/stösta samt
+    // min D(S), max D(S)
     private static void processSolution(Subset even, Subset odd, Result result) {
         result.count++;
 
-        int d = even.getSum() - odd.getSum();
+        // Om (O = 330 - E) => |E - O| = |E - (330- E)| = |2E - 330|
+        int d = Math.abs(2 * even.getSum() - 330);
 
         if (d < result.minD) {
             result.minD = d;
