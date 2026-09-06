@@ -1,3 +1,5 @@
+import random
+
 # 3.1
 U = set(range(1, 31))  # skapar en mängd med elementen 1-30
 k = 7  # antalet element som ska finnas i varje delmängd
@@ -39,7 +41,9 @@ def findSubsets(U, k, sumOfElement):
 validSubsets = findSubsets(U, k, sumOfElement)
 
 print("Number of valid subsets: ", len(validSubsets))
-# print("Valid subsets:")
 
-# for subset in validSubsets:
-#    print(validSubsets)
+randomSubsets = random.sample(validSubsets, 10)
+
+print("\n 10 random valid subsets:")
+for subsets in randomSubsets:
+    print(sorted(subsets))

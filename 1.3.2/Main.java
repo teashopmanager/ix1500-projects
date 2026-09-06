@@ -18,27 +18,11 @@ public class Main {
 
         Result result = findSolutions(evenSubsets, oddSubsets);
 
-        System.out.println(
-                "Antal giltiga delmängder: "
-                        + result.count);
-
-        System.out.println(
-                "Lexikografiskt minsta: "
-                        + java.util.Arrays.toString(
-                                result.lexSmallest));
-
-        System.out.println(
-                "Lexikografiskt största: "
-                        + java.util.Arrays.toString(
-                                result.lexLargest));
-
-        System.out.println(
-                "Min D(S): "
-                        + result.minD);
-
-        System.out.println(
-                "Max D(S): "
-                        + result.maxD);
+        System.out.println("Antal giltiga delmängder: " + result.count);
+        System.out.println("Lexikografiskt minsta: " + java.util.Arrays.toString(result.lexSmallest));
+        System.out.println("Lexikografiskt största: " + java.util.Arrays.toString(result.lexLargest));
+        System.out.println("Min D(S): " + result.minD);
+        System.out.println("Max D(S): " + result.maxD);
     }
 
     public static ArrayList<ArrayList<Subset>> generateEvenSubsets(int[] subset) {
