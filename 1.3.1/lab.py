@@ -42,8 +42,11 @@ validSubsets = findSubsets(U, k, sumOfElement)
 
 print("Number of valid subsets: ", len(validSubsets))
 
-randomSubsets = random.sample(validSubsets, 10)
-
-print("\n 10 random valid subsets:")
-for subsets in randomSubsets:
-    print(sorted(subsets))
+#for subset in validSubsets:
+#    print(validSubsets)
+#
+#randomSubsets = random.sample(validSubsets, 10)
+#
+#print("\n 10 random valid subsets:")
+#for subsets in randomSubsets:
+#    print(sorted(subsets))
