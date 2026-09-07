@@ -18,13 +18,25 @@ public class Main {
 
         Result result = findSolutions(evenSubsets, oddSubsets);
 
-        System.out.println("Antal giltiga delmängder: " + result.count);
-        System.out.println("Lexikografiskt minsta: " + java.util.Arrays.toString(result.lexSmallest));
-        System.out.println("Lexikografiskt största: " + java.util.Arrays.toString(result.lexLargest));
+        System.out.println("Total valid subsets: " + result.count);
+        System.out.println("Lexicographically smallest: " + java.util.Arrays.toString(result.lexSmallest));
+        System.out.println("Lexicographically largest: " + java.util.Arrays.toString(result.lexLargest));
         System.out.println("Min D(S): " + result.minD);
         System.out.println("Max D(S): " + result.maxD);
     }
 
+    /**
+     * Genererar alla delmängder med exakt fem element från den givna mängden av
+     * jämna tal, och där produkten av elementen innehåller minst sex faktorer av 2.
+     * 
+     * Delmängderna grupperas efter deras elementsumma, där indexet i den yttre
+     * listan motsvarar elementsumman.
+     * 
+     * @param subset array med jämna element som delmängderna ska bildas från
+     * @return en lista av buckets där varje bucket innehåller delsummor med samma
+     *         elementsumma
+     * 
+     */
     public static ArrayList<ArrayList<Subset>> generateEvenSubsets(int[] subset) {
         // Varje delmängd ska innehålla exakt 5 element
         // och elementprodukten ska minst innehålla 6 faktorer av 2
@@ -65,16 +77,21 @@ public class Main {
 
     /**
      * 
-     * @param subset           delmängd med alla jämna tal 1-60, {2,4,6,...,60}
-     * @param exp2PerElement   hur många faktorer av 2 varje tal har
-     * @param maxRemainingExp2 hur många faktorer av 2 som maximalt finns kvar
-     * @param startIndex       det index i ska fortsätta leta
-     * @param currentSize      hur många tal som vi hittls har valt
-     * @param currentSum       elementsumman av talen som hittils har valts
-     * @param currentExp2      hur många faktorer av 2 de valde talen totalt
-     *                         innehåller
+     * Rekursiv hjälpfunktion som bygger delmängderna med fem element.
+     * 
+     * Sökningen beskärs när det inte finns tillräckligt med element kvar eller när
+     * de återstående elementen inte kan ge tillräckligt många faktorer av 2.
+     * 
+     * @param subset           mängden av jämna tal
+     * @param exp2PerElement   antal faktorer av 2 för varje element i subset
+     * @param maxRemainingExp2 totalt antal faktorer av 2 som återstår från
+     *                         respektive position
+     * @param startIndex       från det index vi fortsätter välja
+     * @param currentSize      antal element som vi hittlls har valt
+     * @param currentSum       elementsumman av talen som hittils valde elementen
+     * @param currentExp2      totalt antal faktorer av 2 i de valda elementen
      * @param current          delmängden som vi håller på att bygga
-     * @param buckets          där de färdiga delmängderna sparas efter sin summa
+     * @param buckets          där färdiga delmängderna sparas efter sin summa
      */
     private static void generateEvenHelper(int[] subset, int[] exp2PerElement, int[] maxRemainingExp2, int startIndex,
             int currentSize, int currentSum, int currentExp2, int[] current, ArrayList<ArrayList<Subset>> buckets) {
@@ -113,6 +130,14 @@ public class Main {
 
     }
 
+    /**
+     * Genererar alla delmängder med exakt sex element från den givna udda mängden.
+     * Delmängderna lagras i en {@link OddSubsetBucket} och grupperas utefter
+     * elementsumman och antal faktorer av 3,5 och 7.
+     * 
+     * @param subset en array med de udda talen som delmängderna ska skapas från
+     * @return en bucketstruktur som innehåller de lagrade delmängderna
+     */
     public static OddSubsetBucket genereateOddSubsets(int[] subset) {
         final int TARGET_SIZE = 6;
 
@@ -125,6 +150,16 @@ public class Main {
         return buckets;
     }
 
+    /**
+     * Rekursiv hjälpfunktion som bygger delmängden med sex udda element.
+     * 
+     * @param subset      mängden av udda tal
+     * @param startIndex  indexet vilket nästa element får väljas från
+     * @param currentSize antal element som hittills har valts
+     * @param currentSum  summan av de hittills valda elementen
+     * @param current     array som innehåller den delmängd som håller på att byggas
+     * @param buckets     en struktur där de färdiga udda delmängderna lagras.
+     */
     private static void genereateOddHelper(int[] subset, int startIndex,
             int currentSize, int currentSum, int[] current, OddSubsetBucket buckets) {
 
@@ -157,6 +192,18 @@ public class Main {
         }
     }
 
+    /**
+     * Söker efter alla giltiga delmängder genom att kombinera jämna och udda
+     * delmängder vars elementsumma tillsammans blir 330
+     * 
+     * För varje jämna delmängd bestäms även hur många ytterligare faktorer av 3,5
+     * och 7 som krävs från den udda delmängden
+     * 
+     * @param evenBuckets jämna delmängder grupperade efter elementsumma
+     * @param oddBuckets  udda delmängder grupperade efter elementsumma och faktorer
+     * @return ett Result-objekt med totalt antal giltiga lösningar, lexikografiska
+     *         största/minsta samt minsta/största D(S)
+     */
     public static Result findSolutions(ArrayList<ArrayList<Subset>> evenBuckets, OddSubsetBucket oddBuckets) {
         Result result = new Result();
 
@@ -200,8 +247,16 @@ public class Main {
         return result;
     }
 
-    // Hjälp funktion räknar antalet delmängder, lxikografiskt minsta/stösta samt
-    // min D(S), max D(S)
+    /**
+     * Behandlar en giltig kombination av en jämn och udda delmängd
+     * 
+     * Uppdaterar totalt antal lösningar, minsta och största värdet av D(S) samt den
+     * lexikografiska största och minsta giltiga delmängden
+     * 
+     * @param even   den jämna delen av den giltiga delmängden
+     * @param odd    den udda delen av den giltiga delmängden
+     * @param result objektet där resultatet lagras
+     */
     private static void processSolution(Subset even, Subset odd, Result result) {
         result.count++;
 
@@ -233,6 +288,13 @@ public class Main {
         }
     }
 
+    /**
+     * Slår ihop två sorterade arrayer till en gemensam sorterad arrray.
+     * 
+     * @param even sorterad array med jämna element
+     * @param odd  sorterad array med udda element
+     * @return en sorterad array som innehåller samtliga element
+     */
     private static int[] mergeSorted(int[] even, int[] odd) {
         int[] result = new int[even.length + odd.length];
         int i = 0;
@@ -258,9 +320,15 @@ public class Main {
         return result;
     }
 
-    private static int compareLexicographically(
-            int[] a,
-            int[] b) {
+    /**
+     * Jämför två arrayer lexikografiskt. Jämförelsen gör elementvis från vänster
+     * till höger tills två olika element hittats.
+     * 
+     * @param a den första arrayen
+     * @param b den andra arayen
+     * @return ett negativt tal om b > a, ett positivt tal om a > b, annars 0.
+     */
+    private static int compareLexicographically(int[] a, int[] b) {
 
         for (int i = 0; i < a.length; i++) {
 
@@ -276,7 +344,13 @@ public class Main {
         return 0;
     }
 
-    // Hjälp-funktion för att beräkna antalet faktorer av 2 för ett heltal x
+    /**
+     * Beräknar hur många faktorer av 2 som förekommer i ett tal. Till exempel ger 8
+     * resultatet 3 eftersom 8 = 2*2*2
+     * 
+     * @param x heltalet som ska undersökas
+     * @return antalet faktorer av 2 i x
+     */
     private static int counterFactorOfTwo(int x) {
         int count = 0;
         while (x % 2 == 0) {
