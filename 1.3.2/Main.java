@@ -214,7 +214,6 @@ public class Main {
             ArrayList<Subset> currentEvenBucket = evenBuckets.get(evenSum);
             int oddSum = 330 - evenSum;
 
-            //
             if (oddSum < 0 || oddSum > 324) {
                 continue;
             }
@@ -271,19 +270,11 @@ public class Main {
         }
 
         int[] completeSubset = mergeSorted(even.getElements(), odd.getElements());
-        if (result.lexSmallest == null
-                || compareLexicographically(
-                        completeSubset,
-                        result.lexSmallest) < 0) {
-
+        if (result.lexSmallest == null || compareLexicographically(completeSubset, result.lexSmallest) < 0) {
             result.lexSmallest = completeSubset.clone();
         }
 
-        if (result.lexLargest == null
-                || compareLexicographically(
-                        completeSubset,
-                        result.lexLargest) > 0) {
-
+        if (result.lexLargest == null || compareLexicographically(completeSubset, result.lexLargest) > 0) {
             result.lexLargest = completeSubset.clone();
         }
     }

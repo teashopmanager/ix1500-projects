@@ -7,12 +7,12 @@ public class OddSubsetBucket {
 
     @SuppressWarnings({ "Unchecked", "unchecked" })
     public OddSubsetBucket() {
-        buckets = new ArrayList[MAX_SUM + 1][4][3][2];
+        buckets = new ArrayList[MAX_SUM + 1][4][3][3];
 
         for (int sum = 0; sum <= MAX_SUM; sum++) {
             for (int exp3 = 0; exp3 <= 3; exp3++) {
                 for (int exp5 = 0; exp5 <= 2; exp5++) {
-                    for (int exp7 = 0; exp7 <= 1; exp7++) {
+                    for (int exp7 = 0; exp7 <= 2; exp7++) {
                         buckets[sum][exp3][exp5][exp7] = new ArrayList<>();
                     }
                 }
