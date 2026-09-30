@@ -1,6 +1,24 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
+
+long long mod(long long a, long long n) {
+    long long quotient = a / n;
+    long long remainder = a - quotient * n;
+
+    return remainder;
+}
+
+long long ssqrt(long long n) {
+    long long x = n; 
+    long long y = (x + 1) / 2; 
+
+    while(y < x) {
+        x = y; 
+        y = (x + n / x) / 2;
+    }
+
+    return x; 
+}
 
 // Hjälpfunktion som markerar och returnerar en lista med primtal upp från 2 till sqrt(n) 
 int *sieves(int n, int *prime_count) {
@@ -74,7 +92,7 @@ int *sieves(int n, int *prime_count) {
 }
 
 void find_pq(long long n, long long *p, long long *q) {
-    int limit = (int)sqrt((double)n);
+    int limit = (int)ssqrt(n);
 
     int prime_count;
 
@@ -85,7 +103,7 @@ void find_pq(long long n, long long *p, long long *q) {
     }
 
     for (int i = 0; i < prime_count; i++) {
-        if (n % primes[i] == 0) {
+        if (mod(n, primes[i]) == 0) {
             *p = primes[i];
             *q = n / primes[i];
 
@@ -113,7 +131,8 @@ long long find_d(long long e, long long phi) {
     while(remainder != 0) {
         long long quotient = prev_remainder / remainder;
 
-        long long new_remainder = prev_remainder - quotient * remainder;
+        long long new_remainder = mod(prev_remainder, remainder);
+
         prev_remainder = remainder;
         remainder = new_remainder;
 
@@ -131,13 +150,14 @@ long long find_d(long long e, long long phi) {
     return prev_e_coefficient;
 }
 
-void decrypt() {
-    
+void decrypt(long long c, long long d, long long n) {
+
 }
 
 int main() {
     int key = 0; 
 
+    long long c = 149649839764178808; 
     long long p[] = {0, 0, 0, 0, 0, 0};
     long long q[] = {0, 0, 0, 0, 0, 0};
 
@@ -161,13 +181,15 @@ int main() {
 
     long long phi[] = {0, 0, 0, 0, 0, 0};
 
+    long long d[] = {0, 0, 0, 0, 0, 0};
+
     find_pq(n[key], &p[key], &q[key]);
     euler_phi(phi, p, q, key); 
-    //gcd(e[key], phi[key]);
+    long long d1 = find_d(e[key], phi[key]);
 
     printf("p = %lld\n", p[key]);
     printf("q = %lld\n", q[key]);
     printf("phi = %lld\n", phi[key]);
-    printf("d = %lld\n", find_d(e[key], phi[key]));
+    printf("d = %lld\n", d1);
     return 0;
 }
