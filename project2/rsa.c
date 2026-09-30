@@ -97,7 +97,19 @@ void find_pq(long long n, long long *p, long long *q) {
     free(primes);
 }
 
+void euler_phi(long long *phi, long long *p, long long *q, int index) {
+
+    phi[index] = (p[index]-1) * (q[index]-1);    
+
+}
+
+void find_d(long long *phi, int *e) {
+    
+}
+
 int main() {
+    int key = 3; 
+
     long long p[] = {0, 0, 0, 0, 0, 0};
     long long q[] = {0, 0, 0, 0, 0, 0};
 
@@ -119,10 +131,13 @@ int main() {
         901082142384103049LL
     };
 
-    find_pq(n[3], &p[3], &q[3]);
+    long long phi[] = {0, 0, 0, 0, 0, 0};
 
-    printf("p = %lld\n", p[3]);
-    printf("q = %lld\n", q[3]);
+    find_pq(n[key], &p[key], &q[key]);
+    euler_phi(phi, p, q, ḱey); 
 
+    printf("p = %lld\n", p[key]);
+    printf("q = %lld\n", q[key]);
+    printf("phi = %lld\n", phi[key]);
     return 0;
 }
