@@ -103,18 +103,46 @@ void euler_phi(long long *phi, long long *p, long long *q, int index) {
 
 }
 
-void find_d(long long *phi, int *e) {
+long long find_d(long long e, long long phi) {
+    long long remainder = e;
+    long long prev_remainder = phi;
+    
+    long long e_coefficient = 1;
+    long long prev_e_coefficient = 0;
+
+    while(remainder != 0) {
+        long long quotient = prev_remainder / remainder;
+
+        long long new_remainder = prev_remainder - quotient * remainder;
+        prev_remainder = remainder;
+        remainder = new_remainder;
+
+        long long new_e_coefficient = prev_e_coefficient - quotient * e_coefficient;
+
+        prev_e_coefficient = e_coefficient;
+        e_coefficient = new_e_coefficient;
+    }
+
+    // Kontroll så vi inte får den negativa modulära inversen
+    if(prev_e_coefficient < 0) {
+        prev_e_coefficient = prev_e_coefficient + phi;
+    }
+
+    return prev_e_coefficient;
+}
+
+void decrypt() {
     
 }
 
 int main() {
-    int key = 3; 
+    int key = 0; 
 
     long long p[] = {0, 0, 0, 0, 0, 0};
     long long q[] = {0, 0, 0, 0, 0, 0};
 
     int e[] = {
-        0,
+        7,
         23,
         7,
         19,
@@ -123,7 +151,7 @@ int main() {
     };
 
     long long n[] = {
-        0,
+        391,
         100289621329340257LL, 
         882238272068111039LL, 
         182469164307407143LL, 
@@ -134,10 +162,12 @@ int main() {
     long long phi[] = {0, 0, 0, 0, 0, 0};
 
     find_pq(n[key], &p[key], &q[key]);
-    euler_phi(phi, p, q, ḱey); 
+    euler_phi(phi, p, q, key); 
+    //gcd(e[key], phi[key]);
 
     printf("p = %lld\n", p[key]);
     printf("q = %lld\n", q[key]);
     printf("phi = %lld\n", phi[key]);
+    printf("d = %lld\n", find_d(e[key], phi[key]));
     return 0;
 }
