@@ -2,11 +2,9 @@
 #include <stdlib.h>
 #include <math.h>
 
-void sieves(int n)
+long long *sieves(long long n, int *prime_count)
 {
-
     char *arr = malloc((n + 1) * sizeof(char));
-    // char arr[n + 1];
 
     if (arr == NULL)
     {
@@ -14,19 +12,18 @@ void sieves(int n)
         return;
     }
 
-    // Initiera arrayen. Vi måste ha n + 1 platser eftersom vi vill kunna använda indexet direkt efter talet
-    for (int i = 0; i <= n; i++) // Sätter alla positioner till 0 (omarkerade)
+    // 0 = omarkerad
+    // 1 = markerad
+    for (int i = 0; i <= n; i++)
     {
         arr[i] = 0;
     }
 
-    // Börja med p = 2 (minsta primtalet)
-
     int p = 2;
 
-    // Markera multiplar av p
-    while (p <= n) // Sålänge vi har ett giltigt p fortsätter vi
+    while (p <= n)
     {
+        // Markera multiplar av p
         for (int i = 2 * p; i <= n; i += p)
         {
             arr[i] = 1;
@@ -34,7 +31,7 @@ void sieves(int n)
 
         int next = p + 1;
 
-        while (next <= n && arr[next] == 1) // Letar efter nästa tal som inte är markerat
+        while (next <= n && arr[next] == 1)
 
         {
             next++;
@@ -47,11 +44,65 @@ void sieves(int n)
 
         p = next;
     }
+
+    *prime_count = 0;
+
+    for (long i = 2; i <= n; i++)
+    {
+        if (arr[i] == 0)
+        {
+            (*prime_count)++;
+        }
+    }
+
+    long long *primes = malloc(*prime_count * sizeof(long long));
+
+    if (primes == NULL)
+    {
+        free(arr);
+        return NULL;
+    }
+
+    int index = 0;
+
+    for (int i = 2; i <= n; i++)
+    {
+        if (arr[i] == 0)
+        {
+            primes[index] = i;
+            index++;
+        }
+    }
     free(arr);
+
+    return primes;
 }
 
 void find_pq(long long n, long *p, long *q)
 {
+    int limit = (int)sqrt((double)n);
+
+    int prime_count;
+
+    long long *primes = sieves(limit, &prime_count);
+
+    if (primes == NULL)
+    {
+        return;
+    }
+
+    for (int i = 0; i < prime_count; i++)
+    {
+        if (n % primes[i] == 0)
+        {
+            *p = primes[i];
+            *q = n / primes[i];
+
+            free(primes);
+            return;
+        }
+    }
+    free(primes);
 }
 
 int main()
@@ -63,4 +114,9 @@ int main()
     long long n = 100289621329340257;
 
     find_pq(n, &p, &q);
+
+    printf("p = #lld\n", p);
+    printf("q = #lld\n", q);
+
+    return 0;
 }
