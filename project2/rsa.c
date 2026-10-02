@@ -42,8 +42,10 @@ long long square_and_multiply(long long c, long long d, long long n) {
             m = mod_mult(m, c, n);
         }
 
+        // c² mod n
         c = mod_mult(c, c, n);
 
+        // d halveras
         d = d / 2;
     }
 
