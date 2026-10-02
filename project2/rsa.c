@@ -2,6 +2,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+/**
+ * @brief Beräknar summan av två tal mod n utan overflow
+ *
+ * Funktionen beräknar ((x+y) mod n) utan att direkt utföra
+ * additionen x + y. Detta förhindrar overflow när talen är 
+ * för stora
+ * 
+ * @param x Det första talet 
+ * @param y Det andra talet
+ * @param n Modulus som x + y utförs mod 
+ * @return Summan (x+y) mod n
+ */
 long long mod_add(long long x, long long y, long long n) {
     if (x >= n - y) {
         return x - (n - y);
@@ -10,34 +22,84 @@ long long mod_add(long long x, long long y, long long n) {
     return x + y;
 }
 
+/**
+ * @brief Beräknar produkten av två tal mod n
+ * 
+ * Funktionen beräknar: (a * b) mod n, utan att direkt 
+ * multiplicera a och b. Detta görs för att undvika overflow.
+ *
+ * Algoritmen använder double-and-add. Vid varje iteration
+ * kontrolleras om b är udda. Om b är udda läggs den aktuella
+ * versionen av a till resultatet. Därefter dubblas a och b halveras.
+ *
+ * @param a Det första talet
+ * @param b Det andra talet
+ * @param n Modulus
+ * @return (a * b) mod n 
+ */
 long long mod_mult(long long a, long long b, long long n) {
+    
+    // Resultatet byggs upp stegvis
     long long result = 0;
 
+    // Minska a mod n innan multi. börjar
     a = a % n;
 
     while (b > 0) {
+        /**
+         * Om b är udda ska den aktuella versionen av a
+         * multipliceras in i resultatet.
+         */
 
         if ((b % 2) == 1) {
             result = mod_add(result, a, n);
         }
 
-        // Dubblar a, 2a
+        /**
+         * Dubblar a mod n, detta motsvarar (a = 2a mod n)
+         * mod_add används för att undvika overflow
+         */
         a = mod_add(a, a, n);
 
-        // Halverar b, b / 2
+        // Halverar b för nästa iteration
         b = b / 2;
     }
 
     return result;
 }
 
+/**
+ * @brief Beräknar modulär exponentiering med square-and-multiply
+ * 
+ * Funktionen beräknar: c^d mod n, utan att först beräkna potensen c^d.
+ *
+ * Algoritmen använder square-and-multiply. Exponenten d behandlas bit
+ * för bit genom att kontrollera om den är udda, därefter kvadreras 
+ * basen och exponenten halveras.
+ *
+ * @param c Basen som ska exponentieras
+ * @param d Exponenten
+ * @param n Modulus
+ * @return c^d mod n 
+ */
 long long square_and_multiply(long long c, long long d, long long n) {
+    
+    /**
+     * m innehåller det resultat som byggs upp under algoritmens gång.
+     *
+     * Vi börjar med 1 eftersom 1 är ett neutralt element vid multi.
+     * 
+     */
     long long m = 1;
 
+    // Minskar basen med mod n
     c = c % n;
 
     while (d > 0) {
-
+        /**
+         * Om d är udda ska den aktuella potensen av c
+         * multipliceras in i resultatet.
+         */
         if ((d % 2) == 1) {
             m = mod_mult(m, c, n);
         }
