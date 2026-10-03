@@ -325,26 +325,52 @@ u64 decrypt(u64 c, u64 d, u64 n) {
  * @param n         RSA-modulus
  */
 void decrypt_file(const char *filename, u64 d, u64 n) {
+
+    // Öppnar filen med krypterade meddelandet för läsning, "r" = read mode
     FILE *file = fopen(filename, "r");
 
+    // Om filen inte kunde öppnas returnerar fopen() NULL
     if (file == NULL) {
         printf("Could not open file: %s\n", filename);
         return;
     }
 
+    // Variabeln som lagrar ett krypterat block c i taget
     u64 c;
 
-    while (fscanf(file, "%" SCNu64, &c) == 1) {
+    // Försöker läsa det första krypterade heltalet från filen.
+    // fscanf() returnerar 1 om ett u64-värde kunde läsas
+    int read_result = fscanf(file, "%" SCNu64, &c);
+
+    // Fortsätter så länge ett krypterat heltal kunde läsas från filen.
+    while (read_result == 1) {
+
+        // Dekrypterar så länge ett krypterat heltal kunde läsas från filen.
+        // m = c^d mod n
         u64 m = decrypt(c, d, n);
 
-        putchar((m >> 24) & 0xFF);
-        putchar((m >> 16) & 0xFF);
-        putchar((m >> 8) & 0xFF);
-        putchar(m & 0xFF);
+        // Delar upp m i fyra bytes.
+        // Högerförskjutning används för att flytta önskad byte längst till
+        // höger och & 0xFF  behåller endast de 8 least significant bits.
+        unsigned char byte1 = (m >> 24) & 0xFF;
+        unsigned char byte2 = (m >> 16) & 0xFF;
+        unsigned char byte3 = (m >> 8) & 0xFF;
+        unsigned char byte4 = m & 0xFF;
+
+        // Skriver ut varje byte som ett tecken i rätt ordning till terminalen
+        putchar(byte1);
+        putchar(byte2);
+        putchar(byte3);
+        putchar(byte4);
+
+        // Försöker läsa nästa krypterade block från filen
+        read_result = fscanf(file, "%" SCNu64, &c);
     }
 
+    // Skriver en radbrytning efter det krypterade meddelandet
     putchar('\n');
 
+    // Stänger filen när hela det krypterade meddelandet har behandlats.
     fclose(file);
 }
 
