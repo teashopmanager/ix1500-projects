@@ -338,13 +338,19 @@ void decrypt_file(const char *filename, u64 d, u64 n) {
 
     u64 c;
 
-    while (fscanf(file, "%" SCNu64, &c) == 1) {
+    int read_result = fscanf(file, "%" SCNu64, &c);
+    while (read_result == 1) {
         u64 m = decrypt(c, d, n);
 
-        putchar((m >> 24) & 0xFF);
-        putchar((m >> 16) & 0xFF);
-        putchar((m >> 8) & 0xFF);
-        putchar(m & 0xFF);
+        unsigned char byte1 = (m >> 24) & 0xFF;
+        unsigned char byte2 = (m >> 16) & 0xFF;
+        unsigned char byte3 = (m >> 8) & 0xFF;
+        unsigned char byte4 = m & 0xFF;
+
+        putchar(byte1);
+        putchar(byte2);
+        putchar(byte3);
+        putchar(byte4);
     }
 
     putchar('\n');
