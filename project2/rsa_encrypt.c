@@ -1,14 +1,48 @@
+#include <bits/time.h>
+#include <complex.h>
 #include <inttypes.h>
 #include <math.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
+/**
+ * @brief
+ *
+ * @param start
+ * @param stop
+ * @return long long
+ */
+long long nano_seconds(struct timespec *start, struct timespec *stop) {
+    return (stop->tv_sec - start->tv_sec) * 1000000000LL +
+           (stop->tv_nsec - start->tv_nsec);
+}
+
+/**
+ * @brief Alias för ett 128-bitars unsigned heltal
+ *
+ * Kan lagra heltal från 0 till 2^127 -1
+ */
+typedef unsigned __int128 u128;
+
+/**
+ * @brief Alias för ett 128-bitars heltal.
+ *
+ * Kan lagra heltal från -2^127 till 2^127 -1.
+ */
+typedef __int128 i128;
 
 /** @brief Alias för ett 64-bitars unsigned heltal.
  *
  * Kan lagra positiva heltal från 0 till 2^64 - 1.
  */
 typedef uint64_t u64;
+
+/** @brief Alias för ett 32-bitars unsigned heltal.
+ *
+ * Kan lagra positiva heltal från 0 till 2^32 - 1.
+ */
+typedef uint32_t u32;
 
 /**
  * @brief Alias för ett 64-bitars signed heltal.
@@ -17,6 +51,115 @@ typedef uint64_t u64;
  *
  */
 typedef int64_t i64;
+
+typedef struct {
+    u64 p;
+    u64 q;
+    u128 n;
+    u128 phi;
+    u128 e;
+    u128 d;
+} RSAKey;
+
+/**
+ * @brief Beräknar gcd(a, b) med Euklides algoritm
+ *
+ * @param a
+ * @param b
+ * @return
+ */
+u128 gcd(u128 a, u128 b) {
+    while (b != 0) {
+        u128 remainder = a % b;
+        a = b;
+        b = remainder;
+    }
+
+    return a;
+}
+
+/**
+ * @brief Genererar ett slumpässigt tal med angivet antal bitar.
+ *
+ * Högsta biten sätts till 1 så att talet får den önskade bit storleken.
+ *
+ * Lägsta biten sätts till 1 så att talet blir udda.
+ *
+ * @param bits      Hur många bitar talet som ska genereras är 1
+ * @return
+ */
+u128 random_bits(int bits) {
+    u128 number = 0;
+
+    for (int i = 0; i < bits; i++) {
+        number = (number << 1) | (rand() & 1);
+    }
+
+    number = number | ((u128)1 << (bits - 1));
+
+    number = number | 1;
+
+    return number;
+}
+
+/**
+ * @brief Kontrollerar om n är ett primtal.
+ *
+ * @param n
+ * @return int
+ */
+int is_prime(u64 n) {
+    if (n < 2) {
+        return 0;
+    }
+
+    if (n == 2) {
+        return 1;
+    }
+
+    if (n % 2 == 0) {
+        return 0;
+    }
+
+    for (u64 divisor = 3; divisor <= n / divisor; divisor += 2) {
+        if ((n % divisor) == 0) {
+            return 0;
+        }
+    }
+
+    return 1;
+}
+
+/**
+ * @brief Genererar ett primtal med ungefär bits bitar.
+ *
+ * @param bits
+ * @return
+ */
+u64 generate_prime(int bits) {
+    while (1) {
+        u64 candidate = random_bits(bits);
+        if (is_prime(candidate)) {
+            return candidate;
+        }
+    }
+}
+
+/**
+ * @brief
+ *
+ * @param phi
+ * @return
+ */
+u128 generate_e(u128 phi) {
+    u128 e;
+
+    do {
+        e = 2 + (u128)rand() % (phi - 2);
+    } while (gcd(e, phi) != 1);
+
+    return e;
+}
 
 /**
  * @brief Beräknar summan av två tal mod n utan overflow
@@ -30,7 +173,7 @@ typedef int64_t i64;
  * @param n Modulus som x + y utförs mod
  * @return Summan (x+y) mod n
  */
-u64 mod_add(u64 x, u64 y, u64 n) {
+u128 mod_add(u128 x, u128 y, u128 n) {
     if (x >= n - y) {
         return x - (n - y);
     }
@@ -53,10 +196,10 @@ u64 mod_add(u64 x, u64 y, u64 n) {
  * @param n Modulus
  * @return (a * b) mod n
  */
-u64 mod_mult(u64 a, u64 b, u64 n) {
+u128 mod_mult(u128 a, u128 b, u128 n) {
 
     // Resultatet byggs upp stegvis
-    u64 result = 0;
+    u128 result = 0;
 
     // Minska a mod n innan multi. börjar
     a = a % n;
@@ -98,7 +241,7 @@ u64 mod_mult(u64 a, u64 b, u64 n) {
  * @param n Modulus
  * @return c^d mod n
  */
-u64 square_and_multiply(u64 c, u64 d, u64 n) {
+u128 square_and_multiply(u128 c, u128 d, u128 n) {
 
     /**
      * m innehåller det resultat som byggs upp under algoritmens gång.
@@ -106,7 +249,7 @@ u64 square_and_multiply(u64 c, u64 d, u64 n) {
      * Vi börjar med 1 eftersom 1 är ett neutralt element vid multi.
      *
      */
-    u64 m = 1;
+    u128 m = 1;
 
     // Minskar basen med mod n
     c = c % n;
@@ -220,7 +363,7 @@ int *sieves(int n, int *prime_count) {
  * @param p     Pekare där den första primtalsfaktorn sparas.
  * @param q     Pekare där den andra primtalsfaktorn sparas.
  */
-void find_pq(u64 n, u64 *p, u64 *q) {
+void find_pq(u128 n, u128 *p, u128 *q) {
     int limit = (int)sqrt(n);
 
     int prime_count;
@@ -254,8 +397,8 @@ void find_pq(u64 n, u64 *p, u64 *q) {
  * @param p         Array med den första primtalsfaktorn.
  * @param q         Array med den andra primtalsfaktorn.
  */
-u64 euler_phi(u64 p, u64 q) {
-    return (p - 1) * (q - 1);
+u128 euler_phi(u64 p, u64 q) {
+    return (u128)(p - 1) * (u128)(q - 1);
 }
 
 /**
@@ -269,22 +412,22 @@ u64 euler_phi(u64 p, u64 q) {
  * @param phi           Värdet av Eulers phi-funktion.
  * @return              Den privata exponenten d.
  */
-u64 find_d(u64 e, u64 phi) {
-    i64 remainder = e;
-    i64 prev_remainder = phi;
+u128 find_d(u128 e, u128 phi) {
+    i128 remainder = e;
+    i128 prev_remainder = phi;
 
-    i64 e_coefficient = 1;
-    i64 prev_e_coefficient = 0;
+    i128 e_coefficient = 1;
+    i128 prev_e_coefficient = 0;
 
     while (remainder > 1) {
-        i64 quotient = prev_remainder / remainder;
+        i128 quotient = prev_remainder / remainder;
 
-        i64 new_remainder = prev_remainder % remainder;
+        i128 new_remainder = prev_remainder % remainder;
 
         prev_remainder = remainder;
         remainder = new_remainder;
 
-        i64 new_e_coefficient = prev_e_coefficient - quotient * e_coefficient;
+        i128 new_e_coefficient = prev_e_coefficient - quotient * e_coefficient;
 
         prev_e_coefficient = e_coefficient;
         e_coefficient = new_e_coefficient;
@@ -292,10 +435,10 @@ u64 find_d(u64 e, u64 phi) {
 
     // Kontroll så vi inte får den negativa modulära inversen
     if (e_coefficient < 0) {
-        e_coefficient = e_coefficient + (i64)phi;
+        e_coefficient = e_coefficient + (i128)phi;
     }
 
-    return (u64)e_coefficient;
+    return (u128)e_coefficient;
 }
 
 /**
@@ -309,12 +452,68 @@ u64 find_d(u64 e, u64 phi) {
  * @param n             RSA-modulus.
  * @return long long    Det dekrypterade talet.
  */
-u64 decrypt(u64 c, u64 d, u64 n) {
+u128 decrypt(u128 c, u128 d, u128 n) {
     return square_and_multiply(c, d, n);
 }
 
-u64 encrypt(u64 m, u64 e, u64 n) {
+u128 encrypt(u128 m, u128 e, u128 n) {
     return square_and_multiply(m, e, n);
+}
+/**
+ * @brief Funktion för att ersätta SCNu64 eftersom det inte finns för 128
+ *
+ * https://stackoverflow.com/questions/11656241/how-can-i-print-uint128-t-number-using-gcc
+ * inspirerad från denna, men modfierad så den gör samma som SC<Nu64.>
+ * @param file
+ * @param value
+ */
+void fprint_u128(FILE *file, u128 value) {
+    char buffer[40];
+    int index = 0;
+
+    if (value == 0) {
+        fputc('0', file);
+        return;
+    }
+
+    while (value > 0) {
+        buffer[index++] = '0' + (value % 10);
+        value /= 10;
+    }
+
+    while (index > 0) {
+        fputc(buffer[--index], file);
+    }
+}
+
+/**
+ * @brief
+ *
+ * @param file
+ * @param value
+ * @return int
+ */
+int read_u128(FILE *file, u128 *value) {
+    int ch;
+
+    do {
+        ch = fgetc(file);
+
+        if (ch == EOF) {
+            return 0;
+        }
+    } while (ch == ' ' || ch == '\n' || ch == '\t' || ch == '\r');
+
+    u128 result = 0;
+
+    while (ch >= '0' && ch <= '9') {
+        result = result * 10 + (ch - '0');
+        ch = fgetc(file);
+    }
+
+    *value = result;
+
+    return 1;
 }
 
 /**
@@ -328,7 +527,8 @@ u64 encrypt(u64 m, u64 e, u64 n) {
  * @param d         Den privata RSA-exponenten.
  * @param n         RSA-modulus
  */
-void decrypt_file(const char *filename, u64 d, u64 n) {
+void decrypt_file(const char *filename, u128 d, u128 n) {
+
     FILE *file = fopen(filename, "r");
 
     if (file == NULL) {
@@ -336,10 +536,12 @@ void decrypt_file(const char *filename, u64 d, u64 n) {
         return;
     }
 
-    u64 c;
+    u128 c;
 
-    int read_result = fscanf(file, "%" SCNu64, &c);
+    int read_result = read_u128(file, &c);
+
     while (read_result == 1) {
+
         u64 m = decrypt(c, d, n);
 
         unsigned char byte1 = (m >> 24) & 0xFF;
@@ -347,13 +549,8 @@ void decrypt_file(const char *filename, u64 d, u64 n) {
         unsigned char byte3 = (m >> 8) & 0xFF;
         unsigned char byte4 = m & 0xFF;
 
-        putchar(byte1);
-        putchar(byte2);
-        putchar(byte3);
-        putchar(byte4);
+        read_result = read_u128(file, &c);
     }
-
-    putchar('\n');
 
     fclose(file);
 }
@@ -374,7 +571,7 @@ void decrypt_file(const char *filename, u64 d, u64 n) {
  * @param n                     RSA-modulus
  */
 void encrypt_file(const char *input_filename, const char *output_filename,
-                  u64 e, u64 n) {
+                  u128 e, u128 n) {
 
     // Öpnnar inputfilen för läsning, "r" = read mode
     FILE *input_file = fopen(input_filename, "r");
@@ -443,17 +640,13 @@ void encrypt_file(const char *input_filename, const char *output_filename,
 
         // Krypterar m med den publika nyckeln (e, n)
         // c = m^e mod n
-        u64 c = encrypt(m, e, n);
+        u128 c = encrypt(m, e, n);
 
         // Skriver det krypterade blocket c till outputfilen som ett decimalt
         // heltal
-        fprintf(output_file, "%" PRIu64 " ", c);
-
-        // Skriver även det krypterade blocket till terminalen
-        printf("%" PRIu64 " ", c);
+        fprint_u128(output_file, c);
+        fputc(' ', output_file);
     }
-
-    printf(" \n \n");
 
     // Stänger filerna när hela meddelandet har behandlats
     fclose(input_file);
@@ -462,20 +655,83 @@ void encrypt_file(const char *input_filename, const char *output_filename,
 
 int main() {
 
-    u64 p = 65537;
-    u64 q = 65539;
-    u64 e = 17;
+    srand(time(NULL));
 
-    u64 n = p * q;
-    u64 phi = euler_phi(p, q);
-    u64 d = find_d(e, phi);
+    int bits = 128;
+    int tests = 10;
 
-    printf("Public key:  e = %" PRIu64 ", n = %" PRIu64 "\n", e, n);
-    printf("Private key: d = %" PRIu64 ", n = %" PRIu64 "\n", d, n);
+    long long total_encryption_time = 0;
+    long long total_decryption_time = 0;
 
-    encrypt_file("encrypt.txt", "decrypt.txt", e, n);
+    for (int i = 0; i < tests; i++) {
 
-    decrypt_file("decrypt.txt", d, n);
+        u64 p = generate_prime(bits / 2);
+        u64 q;
+
+        do {
+            q = generate_prime(bits / 2);
+        } while (p == q);
+
+        u128 n = (u128)p * (u128)q;
+
+        u128 phi = euler_phi(p, q);
+
+        u64 e = 65537;
+
+        do {
+            p = generate_prime(bits / 2);
+
+            do {
+                q = generate_prime(bits / 2);
+            } while (p == q);
+
+            n = (u128)p * (u128)q;
+
+            phi = euler_phi(p, q);
+
+        } while (gcd(e, phi) != 1);
+
+        u128 d = find_d(e, phi);
+
+        // printf("\n--- Test %d ---\n", i + 1);
+        //  printf("p   = %" PRIu64 "\n", p);
+        //  printf("q   = %" PRIu64 "\n", q);
+        //  printf("n   = %" PRIu64 "\n", n);
+        //  printf("phi = %" PRIu64 "\n", phi);
+        //  printf("e   = %" PRIu64 "\n", e);
+        //  printf("d   = %" PRIu64 "\n", d);
+
+        struct timespec start;
+        struct timespec stop;
+
+        // Kryptera hela meddelandet
+        clock_gettime(CLOCK_MONOTONIC, &start);
+        encrypt_file("encrypt.txt", "decrypt.txt", e, n);
+        clock_gettime(CLOCK_MONOTONIC, &stop);
+
+        long long encryption_time = nano_seconds(&start, &stop);
+
+        total_encryption_time += encryption_time;
+
+        // Dekryptera hela meddelandet
+        clock_gettime(CLOCK_MONOTONIC, &start);
+        decrypt_file("decrypt.txt", d, n);
+        clock_gettime(CLOCK_MONOTONIC, &stop);
+
+        long long decryption_time = nano_seconds(&start, &stop);
+
+        total_decryption_time += decryption_time;
+
+        // printf("Encryption: %lld ns\n", encryption_time);
+        // printf("Decryption: %lld ns\n", decryption_time);
+    }
+
+    double average_encryption = (double)total_encryption_time / tests;
+    double average_decryption = (double)total_decryption_time / tests;
+
+    printf("\n%d-bit RSA average\n", bits);
+    printf("Encryption: %.2f ns\n", average_encryption);
+    printf("Decryption: %.2f ns\n", average_decryption);
 
     return 0;
 }

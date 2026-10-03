@@ -313,6 +313,10 @@ u64 decrypt(u64 c, u64 d, u64 n) {
     return square_and_multiply(c, d, n);
 }
 
+u64 encrypt(u64 m, u64 e, u64 n) {
+    return square_and_multiply(m, e, n);
+}
+
 /**
  * @brief Läser och dekrypterar ett RSA-krypterat meddelande från en fil.
  *
@@ -372,6 +376,108 @@ void decrypt_file(const char *filename, u64 d, u64 n) {
 
     // Stänger filen när hela det krypterade meddelandet har behandlats.
     fclose(file);
+}
+
+/**
+ * @brief Krypterar innehåller i en textfil med RSA.
+ *
+ * Funktionen läser upp till fyra bytes åt gången från inputfilen och
+ * kombinerar dessa till ett heltal m. Därefter krypteras m med den
+ * publika nyckeln (e, n) genom att beräkna c ≡ m^e mod n. Det krypterade talet
+ * c skrivs sedan till outputfilen.
+ *
+ * Processen upprepas tills hela inputfilen har lästs
+ *
+ * @param input_filename        Fil med den text som sak krypteras
+ * @param output_filename       Fil med den krypterade texten
+ * @param e                     Den publika exponenten
+ * @param n                     RSA-modulus
+ */
+void encrypt_file(const char *input_filename, const char *output_filename,
+                  u64 e, u64 n) {
+
+    // Öpnnar inputfilen för läsning, "r" = read mode
+    FILE *input_file = fopen(input_filename, "r");
+
+    // Om filen inte kunde öppnas returnerar fopen() NULL
+    if (input_file == NULL) {
+        printf("Could not open file: %s\n", input_filename);
+        return;
+    }
+
+    // Öppnar outputfilen för skrivning, "w" = write mode
+    FILE *output_file = fopen(output_filename, "w");
+
+    // Om filen inte kunde öppnas
+    if (output_file == NULL) {
+        printf("Could not open file: %s\n", output_filename);
+        fclose(input_file);
+        return;
+    }
+
+    // Arrayen som lagrar upp till fyra bytes från inputfilen.
+    unsigned char bytes[4];
+
+    // Läser och kryperar ett block i taget tills filen är slut.
+    while (1) {
+
+        // Antal bytes som lästs till det aktuella blocket
+        int byte_count = 0;
+
+        // Läs maximalt fyra bytes till det aktuella blocket
+        while (byte_count < 4) {
+
+            // Läser ett tecken i taget från inputfilen
+            int ch = fgetc(input_file);
+
+            // Avsluta läsningen av blocket om filen är slut, EOF = End of File.
+            if (ch == EOF) {
+                break;
+            }
+
+            // Omvandlar det lästa tecknet till en unsigned byte och sparar det
+            // på nästa lediga plats
+            bytes[byte_count] = (unsigned char)ch;
+
+            // Ökar antalet bytes som finns i det aktuella blocket.
+            byte_count++;
+        }
+
+        // Om inga bytes kunde läsas har vi nått slutet av filen och den yttre
+        // loopen avslutas.
+        if (byte_count == 0) {
+            break;
+        }
+
+        // Plaintextblocket m börjar på 0 och byggs sedan upp från de bytes som
+        // lästs från filen
+        u64 m = 0;
+
+        // Packar blockets bytes till ett enda heltal m
+        for (int i = 0; i < byte_count; i++) {
+
+            // Flyttar m 8 bitar åt vänster för att skapa plats för nästa byte
+            // och lägger sedan in bytes[i].
+            m = (m << 8) | bytes[i];
+        }
+
+        // Krypterar m med den publika nyckeln (e, n)
+        // c = m^e mod n
+        u64 c = encrypt(m, e, n);
+
+        // Skriver det krypterade blocket c till outputfilen som ett decimalt
+        // heltal
+        fprintf(output_file, "%" PRIu64 " ", c);
+
+        // Skriver även det krypterade blocket till terminalen
+        printf("%" PRIu64 " ", c);
+    }
+
+    printf(" \n \n");
+
+    // Stänger filerna när hela meddelandet har behandlats
+    fclose(input_file);
+    fclose(output_file);
 }
 
 int main() {
