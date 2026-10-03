@@ -1,2 +1,6 @@
 # Kompilerade Java-klassfiler
 *.class
+
+# Kompilerat RSA-program
+rsa
+rsa.exe
