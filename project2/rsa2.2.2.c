@@ -563,8 +563,8 @@ int main() {
     u128 n = (u128)p * (u128)q;
     u128 phi = euler_phi(p, q);
 
-    printf("%6s | %6s | %15s | %15s\n", "e bits", "d bits", "Encryption (ms)",
-           "Decryption (ms)");
+    printf("%6s | %6s | %15s | %15s\n", "e bits", "d bits", "Encryption (ns)",
+           "Decryption (ns)");
     printf("-------|--------|-----------------|----------------\n");
 
     for (int i = 0; i < e_size_count; i++) {
@@ -591,7 +591,7 @@ int main() {
 
             total_encryption_time += encryption_time;
 
-            // Dekryptera hela meddelandet
+            // Dekryptera hela meddelandettog 4 600 898 ms 
             clock_gettime(CLOCK_MONOTONIC, &start);
             decrypt_file("decrypt.txt", d, n);
             clock_gettime(CLOCK_MONOTONIC, &stop);
