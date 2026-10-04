@@ -1,27 +1,12 @@
-#include <bits/time.h>
-#include <complex.h>
-#include <inttypes.h>
-#include <math.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-/**
- * @brief
- *
- * @param start
- * @param stop
- * @return long long
- */
-long long nano_seconds(struct timespec *start, struct timespec *stop) {
-    return (stop->tv_sec - start->tv_sec) * 1000000000LL +
-           (stop->tv_nsec - start->tv_nsec);
-}
 
 /**
  * @brief Alias för ett 128-bitars unsigned heltal
  *
- * Kan lagra heltal från 0 till 2^127 -1
+ * Kan lagra heltal från 0 till 2^128 -1
  */
 typedef unsigned __int128 u128;
 
@@ -39,19 +24,25 @@ typedef __int128 i128;
 typedef uint64_t u64;
 
 /**
- * @brief Alias för ett 64-bitars signed heltal.
+ * @brief Beräknar tiden mellan två tidpunkter i nanosekunder.
  *
- * Kan lagra heltal från -2^63 till 2^63 - 1.
- *
+ * @param start     Tidpunkten då mätningen startarde.
+ * @param stop      Tidpunkten då mätningen avslutades.
+ * @return          Tidsskillnaden i nanosekunder.
  */
-typedef int64_t i64;
+long long nano_seconds(struct timespec *start, struct timespec *stop) {
+    return (stop->tv_sec - start->tv_sec) * 1000000000LL +
+           (stop->tv_nsec - start->tv_nsec);
+}
 
 /**
- * @brief Beräknar gcd(a, b) med Euklides algoritm
+ * @brief Beräknar största gemensamma delaren för två heltal.
  *
- * @param a
- * @param b
- * @return
+ * Funktionen använder Euklides algoritm för att beräkna gcd(a, b).
+ *
+ * @param a     Det första heltalet
+ * @param b     Det andra heltalet
+ * @return      Största gemensamma delaren till a och b
  */
 u128 gcd(u128 a, u128 b) {
     while (b != 0) {
@@ -66,12 +57,12 @@ u128 gcd(u128 a, u128 b) {
 /**
  * @brief Genererar ett slumpässigt tal med angivet antal bitar.
  *
- * Högsta biten sätts till 1 så att talet får den önskade bit storleken.
+ * Funktionen genererar ett slumpmässigt tal bir för bit.
+ * Den högsta biten stills till 1 för att säkerställa den önskade bitlängden och
+ * den lägsta biten sätts till 1 för att talet ska vara udda.
  *
- * Lägsta biten sätts till 1 så att talet blir udda.
- *
- * @param bits      Hur många bitar talet som ska genereras är 1
- * @return
+ * @param bits      Antalet bitar som talet ska innehålla.
+ * @return          Det genererade slumpmässiga talet.
  */
 u128 random_bits(int bits) {
     u128 number = 0;
@@ -88,10 +79,13 @@ u128 random_bits(int bits) {
 }
 
 /**
- * @brief Kontrollerar om n är ett primtal.
+ * @brief Kontrollerar om ett tal är ett primtal.
  *
- * @param n
- * @return int
+ * Funktionen testar om n är delbart med något udda heltal från 3 upp till roten
+ * ur n. Jämna tal större än 2 kan direkt uteslutas.
+ *
+ * @param n     Talet som ska kontrolleras
+ * @return      1 om n är ett primtal, annars 0
  */
 int is_prime(u64 n) {
     if (n < 2) {
@@ -116,10 +110,13 @@ int is_prime(u64 n) {
 }
 
 /**
- * @brief Genererar ett primtal med ungefär bits bitar.
+ * @brief Genererar ett slumpmässigt primtal med angivet antal bitar.
  *
- * @param bits
- * @return
+ * Funktionen genererar slumpmässiga udda tal tills ett tal som är ett primtal
+ * hittas.
+ *
+ * @param bits      Antalet bitar som primtalet ska innehålla.
+ * @return          Det genererade primtalet.
  */
 u64 generate_prime(int bits) {
     while (1) {
@@ -128,22 +125,6 @@ u64 generate_prime(int bits) {
             return candidate;
         }
     }
-}
-
-/**
- * @brief
- *
- * @param phi
- * @return
- */
-u128 generate_e(u128 phi) {
-    u128 e;
-
-    do {
-        e = 2 + (u128)rand() % (phi - 2);
-    } while (gcd(e, phi) != 1);
-
-    return e;
 }
 
 /**
@@ -259,128 +240,14 @@ u128 square_and_multiply(u128 c, u128 d, u128 n) {
 }
 
 /**
- * @brief Hittar alla primtal från 2 till n.
- *
- * Funktionen använder Sieve of Eratosthenes algoritm för att markera alla tal
- * som inte är primtal. Därefter räknas primtalen och sparas i en dynamisk
- * allokerad array som returneras. Antalet primtal sparas i prime_count.
- *
- * @param n                 Övre gränsen för vilka primtal som ska hittas.
- * @param prime_count       Pekare där antalet hittade primtal sparas.
- * @return int*             Pekare till en array som innehåller primtalen, eller
- *                          NULL om minnesallokeringen misslyckades
- */
-int *sieves(int n, int *prime_count) {
-    char *arr = malloc((n + 1) * sizeof(char));
-
-    if (arr == NULL) {
-        printf("Memoty error: ");
-        return NULL;
-    }
-
-    // 0 = omarkerad
-    // 1 = markerad
-    for (int i = 0; i <= n; i++) {
-        arr[i] = 0;
-    }
-
-    int p = 2;
-
-    while (p <= n) {
-        // Markera multiplar av p
-        for (int i = 2 * p; i <= n; i += p) {
-            arr[i] = 1;
-        }
-
-        int next = p + 1;
-
-        while (next <= n && arr[next] == 1)
-
-        {
-            next++;
-        }
-
-        if (next > n) {
-            break;
-        }
-
-        p = next;
-    }
-
-    *prime_count = 0;
-
-    for (int i = 2; i <= n; i++) {
-        if (arr[i] == 0) {
-            (*prime_count)++;
-        }
-    }
-
-    int *primes = malloc(*prime_count * sizeof(int));
-
-    if (primes == NULL) {
-        free(arr);
-        return NULL;
-    }
-
-    int index = 0;
-
-    for (int i = 2; i <= n; i++) {
-        if (arr[i] == 0) {
-            primes[index] = i;
-            index++;
-        }
-    }
-
-    free(arr);
-
-    return primes;
-}
-
-/**
- * @brief Hittar primtalsfaktorerna p och q till n.
- *
- * Funktionen genererar alla primtal upp till sqrt(n) mha av sieves().
- * Därefter testas primtalen ett i taget för att hitta ett primtal som delar n
- * utan rest (rest == 0). När en faktor hittas sparas den i p och den andra
- * faktorn beräknas som n / p och sparas i q.
- *
- * @param n     Talet som ska faktoriseras.
- * @param p     Pekare där den första primtalsfaktorn sparas.
- * @param q     Pekare där den andra primtalsfaktorn sparas.
- */
-void find_pq(u128 n, u128 *p, u128 *q) {
-    int limit = (int)sqrt(n);
-
-    int prime_count;
-
-    int *primes = sieves(limit, &prime_count);
-
-    if (primes == NULL) {
-        return;
-    }
-
-    for (int i = 0; i < prime_count; i++) {
-        if ((n % primes[i]) == 0) {
-            *p = primes[i];
-            *q = n / primes[i];
-
-            free(primes);
-            return;
-        }
-    }
-
-    free(primes);
-}
-
-/**
  * @brief Beräknar Eulers phi-funktion för n = p * q.
  *
- * Funktionen beräknar phi(n) med formlen (p - 1) * (q - 1), där p och q är
- * primtalsfaktorerna till n. Resultatet sparas på motsvarande position i
- * phi-arrayen.
+ * För två primtal p och q beräknas phi(n) enligt
+ * phi(n) = (p - 1) * (q - 1)
  *
- * @param p         Array med den första primtalsfaktorn.
- * @param q         Array med den andra primtalsfaktorn.
+ * @param p         Den första primtalsfaktorn.
+ * @param q         Den andra primtalsfaktorn.
+ * @return          Värdet av phi(n)
  */
 u128 euler_phi(u64 p, u64 q) {
     return (u128)(p - 1) * (u128)(q - 1);
@@ -441,16 +308,30 @@ u128 decrypt(u128 c, u128 d, u128 n) {
     return square_and_multiply(c, d, n);
 }
 
+/**
+ * @brief Krypterar ett plaintextblock med RSA.
+ *
+ * Funktionen krypterar plaintext m genom att berälna m^e mod n
+ *
+ * @param m     Plaintextblocket som ska krypteras.
+ * @param e     Den publika RSA-exponenten.
+ * @param n     RSA-modulus
+ * @return      Det krypterade talet c
+ */
 u128 encrypt(u128 m, u128 e, u128 n) {
     return square_and_multiply(m, e, n);
 }
+
 /**
- * @brief Funktion för att ersätta SCNu64 eftersom det inte finns för 128
+ * @brief Skriver ett 128-bitars unsigned heltal till en fil.
  *
- * https://stackoverflow.com/questions/11656241/how-can-i-print-uint128-t-number-using-gcc
- * inspirerad från denna, men modfierad så den gör samma som SC<Nu64.>
- * @param file
- * @param value
+ * Funktionen omvandlar ett u128-värde till dess decimala representation och
+ * skriver siffrorna till den angivna filen.
+ *
+ * (Fungerar som fprintf() för u128)
+ *
+ * @param file      Filen som talet ska skrivas till.
+ * @param value     Talet som ska skrivas.
  */
 void fprint_u128(FILE *file, u128 value) {
     char buffer[40];
@@ -472,11 +353,16 @@ void fprint_u128(FILE *file, u128 value) {
 }
 
 /**
- * @brief
+ * @brief Läser ett 128-bitars heltal från en fil.
  *
- * @param file
- * @param value
- * @return int
+ * Funktionen hoppar över whitespace och läser därefter ett decimalt heltal
+ * tecken för tecken.
+ *
+ * (Fungerar som en fscanf() för u128)
+ *
+ * @param file      Filen som talet ska läsas från.
+ * @param value     Pekare där det inlästa talet sparas.
+ * @return          1 om ett tal lästes, annars 0 om filens slut nåddes
  */
 int read_u128(FILE *file, u128 *value) {
     int ch;
@@ -504,13 +390,13 @@ int read_u128(FILE *file, u128 *value) {
 /**
  * @brief Läser och dekrypterar ett RSA-krypterat meddelande från en fil.
  *
- * Funktionen läser ett krypterat tal i taget från filen, dekrypterar talet och
- * delar sedan upp det dekrypterade talet i fyra bytes.
- * Varje byte skrivs direkt till terminalen som ett tecken
+ * Funktionen läser ett krypterat tal i taget från filen och dekrypterar varje
+ * tal med den privata exponenten d och modulus n.
  *
- * @param filename  Namnet på filen som innehåller det kryterade meddelandet.
- * @param d         Den privata RSA-exponenten.
- * @param n         RSA-modulus
+ * @param filename      Namnet på filen som innehåller det kryterade
+ * meddelandet.
+ * @param d             Den privata RSA-exponenten.
+ * @param n             RSA-modulus
  */
 void decrypt_file(const char *filename, u128 d, u128 n) {
 
@@ -527,17 +413,12 @@ void decrypt_file(const char *filename, u128 d, u128 n) {
 
     while (read_result == 1) {
 
-        u64 m = decrypt(c, d, n);
-
-        unsigned char byte1 = (m >> 24) & 0xFF;
-        unsigned char byte2 = (m >> 16) & 0xFF;
-        unsigned char byte3 = (m >> 8) & 0xFF;
-        unsigned char byte4 = m & 0xFF;
-
+        decrypt(c, d, n);
         read_result = read_u128(file, &c);
     }
 
     fclose(file);
+    return;
 }
 
 /**
@@ -642,7 +523,7 @@ int main() {
 
     srand(time(NULL));
 
-    int bits = 128;
+    int bits = 64;
     int tests = 10;
 
     long long total_encryption_time = 0;
@@ -650,41 +531,24 @@ int main() {
 
     for (int i = 0; i < tests; i++) {
 
-        u64 p = generate_prime(bits / 2);
+        u64 p;
         u64 q;
-
-        do {
-            q = generate_prime(bits / 2);
-        } while (p == q);
-
-        u128 n = (u128)p * (u128)q;
-
-        u128 phi = euler_phi(p, q);
-
+        u128 n;
+        u128 phi;
         u64 e = 65537;
 
         do {
             p = generate_prime(bits / 2);
-
             do {
                 q = generate_prime(bits / 2);
             } while (p == q);
 
             n = (u128)p * (u128)q;
-
             phi = euler_phi(p, q);
 
         } while (gcd(e, phi) != 1);
 
         u128 d = find_d(e, phi);
-
-        // printf("\n--- Test %d ---\n", i + 1);
-        //  printf("p   = %" PRIu64 "\n", p);
-        //  printf("q   = %" PRIu64 "\n", q);
-        //  printf("n   = %" PRIu64 "\n", n);
-        //  printf("phi = %" PRIu64 "\n", phi);
-        //  printf("e   = %" PRIu64 "\n", e);
-        //  printf("d   = %" PRIu64 "\n", d);
 
         struct timespec start;
         struct timespec stop;
