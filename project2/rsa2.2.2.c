@@ -544,8 +544,9 @@ int main() {
 
     srand(time(NULL));
 
+    // för n
     int bits = 128;
-    int tests = 1000;
+    int tests = 100;
 
     int e_sizes[] = {8, 16, 24, 32, 40, 48, 56, 64};
     int e_size_count = sizeof(e_sizes) / sizeof(e_sizes[0]);

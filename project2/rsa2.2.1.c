@@ -130,7 +130,7 @@ u64 generate_prime(int bits) {
 /**
  * @brief Beräknar summan av två tal mod n utan overflow
  *
- * Funktionen beräknar ((x+y) mod n) utan att direkt utföra
+ * Funktionen beräknar ((i128x+y) mod n) utan att direkt utföra
  * additionen x + y. Detta förhindrar overflow när talen är
  * för stora
  *
