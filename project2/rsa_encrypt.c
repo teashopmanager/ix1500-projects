@@ -38,12 +38,6 @@ typedef __int128 i128;
  */
 typedef uint64_t u64;
 
-/** @brief Alias för ett 32-bitars unsigned heltal.
- *
- * Kan lagra positiva heltal från 0 till 2^32 - 1.
- */
-typedef uint32_t u32;
-
 /**
  * @brief Alias för ett 64-bitars signed heltal.
  *
@@ -51,15 +45,6 @@ typedef uint32_t u32;
  *
  */
 typedef int64_t i64;
-
-typedef struct {
-    u64 p;
-    u64 q;
-    u128 n;
-    u128 phi;
-    u128 e;
-    u128 d;
-} RSAKey;
 
 /**
  * @brief Beräknar gcd(a, b) med Euklides algoritm
