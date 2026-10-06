@@ -1,0 +1,184 @@
+Start, Slut, Restid, Linje
+
+Hässelby strand, Hässelby gård, 2, Gröna
+Hässelby gård, Johannelund, 2, Gröna
+Johannelund, Vällingby, 2, Gröna
+Vällingby, Råcksta, 2, Gröna
+Råcksta, Blackeberg, 2, Gröna
+Blackeberg, Islandstorget, 2, Gröna
+Islandstorget, Ängbyplan, 2, Gröna
+Ängbyplan, Åkeshov, 2, Gröna
+Åkeshov, Brommaplan, 2, Gröna
+Brommaplan, Abrahamsberg, 2, Gröna
+Abrahamsberg, Stora mossen, 2, Gröna
+Stora mossen, Alvik, 2, Gröna
+Alvik, Kristineberg, 3, Gröna
+Kristineberg, Thorildsplan, 2, Gröna
+Thorildsplan, Fridhemsplan, 2, Gröna
+Fridhemsplan, S:t Eriksplan, 2, Gröna
+S:t Eriksplan, Odenplan, 2, Gröna
+Odenplan, Rådmansgatan, 2, Gröna
+Rådmansgatan, Hötorget, 2, Gröna
+Hötorget, T-centralen, 2, Gröna
+T-centralen, Gamla stan, 2, Gröna
+Gamla stan, Slussen, 2, Gröna
+Slussen, Medborgarplatsen, 2, Gröna
+Medborgarplatsen, Skanstull, 2, Gröna
+Skanstull, Gullmarsplan, 3, Gröna
+Gullmarsplan, Globen, 2, Gröna 
+Globen, Enskede gård, 2, Gröna
+Enskede gård, Sockenplan, 2, Gröna
+Sockenplan, Svedmyra, 2, Gröna
+Svedmyra, Stureby, 2, Gröna
+Stureby, Bandhagen, 2, Gröna
+Bandhagen, Högdalen, 2, Gröna
+Högdalen, Rågsved, 2, Gröna
+Rågsved, Hagsätra, 2, Gröna
+Gullmarsplan, Skärmarbrink, 2, Gröna
+Skärmarbrink, Blåsut, 2, Gröna
+Blåsut, Sandsborg, 2, Gröna
+Sandsborg, Skogskyrkogården, 2, Gröna
+Skogskyrkogården, Tallkrogen, 2, Gröna
+Tallkrogen, Gubbängen, 2, Gröna
+Gubbängen, Hökarängen, 2, Gröna
+Hökarängen, Farsta, 3, Gröna
+Farsta, Farsta Strand, 2, Gröna
+Skärmarbrink, Hammarbyhöjden, 2, Gröna
+Hammarbyhöjden, Björkhagen, 2, Gröna
+Björkhagen, Kärrtorp, 2, Gröna
+Kärrtorp, Bagarmossen, 2, Gröna
+Bagarmossen, Skarpnäck, 3, Gröna
+Bålsta, Bro, 9, Pendel
+Bro, Kungsängen, 8, Pendel
+Kungsängen, Kallhäll, 7, Pendel
+Kallhäll, Jakobsberg, 4, Pendel
+Jakobsberg, Barkarby, 4, Pendel
+Barkarby, Spånga, 4, Pendel
+Spånga, Sundbybergs centrum, 5, Pendel
+Sundbybergs centrum, Odenplan, 5, Pendel
+Odenplan, T-centralen, 4, Pendel
+T-centralen, Stockholms södra, 4, Pendel
+Stockholms södra, Årstaberg, 4, Pendel
+Årstaberg, Älvsjö, 4, Pendel
+Älvsjö, Stuvsta, 4, Pendel
+Stuvsta, Huddinge, 4, Pendel
+Huddinge, Flemingsberg, 5, Pendel
+Flemingsberg, Tullinge, 5, Pendel
+Tullinge, Tumba, 5, Pendel
+Tumba, Rönninge, 5, Pendel
+Rönninge, Östertälje, 6, Pendel
+Östertälje, Södertälje hamn, 4, Pendel
+Södertälje hamn, Södertälje centrum, 4, Pendel
+Södertälje centrum, Södertälje syd, 5, Pendel
+Södertälje syd, Järna, 7, Pendel
+Järna, Mölnbo, 8, Pendel
+Mölnbo, Gnesta, 9, Pendel
+Märsta, Rosersberg, 6, Pendel
+Rosersberg, Upplands väsby, 6, Pendel
+Uppsala C, Knivsta, 12, Pendel
+Knivsta, Arlanda C, 9, Pendel
+Arlanda C, Upplands väsby, 9, Pendel
+Upplands väsby, Rotebro, 5, Pendel
+Rotebro, Norrviken, 3, Pendel
+Norrviken, Häggvik, 2, Pendel
+Häggvik, Sollentuna, 3, Pendel
+Sollentuna, Helenelund, 3, Pendel
+Helenelund, Ulriksdal, 4, Pendel
+Ulriksdal, Solna, 4, Pendel
+Solna, Odenplan, 5, Pendel
+Älvsjö, Farsta strand, 7, Pendel
+Farsta strand, Trångsund, 4, Pendel
+Trångsund, Skogås, 3, Pendel
+Skogås, Vega, 3, Pendel
+Vega, Handen, 4, Pendel
+Handen, Jordbro, 4, Pendel
+Jordbro, Västerhaninge, 4, Pendel
+Västerhaninge, Krigslida, 4, Pendel
+Krigslida, Tungelsta, 3, Pendel
+Tungelsta, Hemfosa, 6, Pendel
+Hemfosa, Segersäng, 6, Pendel
+Segersäng, Ösmo, 6, Pendel
+Ösmo, Nynäsgård, 7, Pendel
+Nynäsgård, Gröndalsviken, 2, Pendel
+Gröndalsviken, Nynäshamn, 3, Pendel
+Ropsten, Gärdet, 3, Röda
+Gärdet, Karlaplan, 2, Röda
+Karlaplan, Östermalmstorg, 2, Röda
+Mörby centrum, Danderyds sjukhus, 2, Röda
+Danderyds sjukhus, Bergshamra, 3, Röda
+Bergshamra, Universitetet, 3, Röda
+Universitetet, Tekniska högskolan, 3, Röda
+Tekniska högskolan, Stadion, 2, Röda
+Stadion, Östermalmstorg, 2, Röda
+Östermalmstorg, T-centralen, 2, Röda
+T-centralen, Gamla stan, 2, Röda
+Gamla stan, Slussen, 2, Röda
+Slussen, Mariatorget, 2, Röda
+Mariatorget, Zinkensdamm, 2, Röda
+Zinkensdamm, Hornstull, 2, Röda
+Hornstull, Liljeholmen, 3, Röda
+Liljeholmen, Aspudden, 2, Röda
+Aspudden, Örnsberg, 2, Röda
+Örnsberg, Axelsberg, 2, Röda
+Axelsberg, Mälarhöjden, 2, Röda
+Mälarhöjden, Bredäng, 3, Röda
+Bredäng, Sätra, 2, Röda
+Sätra, Skärholmen, 2, Röda
+Skärholmen, Vårberg, 2, Röda
+Vårberg, Vårby gård, 3, Röda
+Vårby gård, Masmo, 3, Röda
+Masmo, Fittja, 3, Röda
+Fittja, Alby, 2, Röda
+Alby, Hallunda, 3, Röda
+Hallunda, Norsborg, 2, Röda
+Liljeholmen, Midsommarkransen, 2, Röda
+Midsommarkransen, Telefonplan, 2, Röda
+Telefonplan, Hägerstensåsen, 2, Röda
+Hägerstensåsen, Västertorp, 2, Röda
+Västertorp, Fruängen, 2, Röda
+Akalla, Husby, 2, Blåa
+Husby, Kista, 2, Blåa
+Kista, Hallonbergen, 3, Blåa
+Hallonbergen, Näckrosen, 2, Blåa
+Näckrosen, Solna centrum, 3, Blåa
+Solna centrum, Västra skogen, 3, Blåa
+Hjulsta, Tensta, 3, Blåa
+Tensta, Rinkeby, 2, Blåa
+Rinkeby, Rissne, 3, Blåa
+Rissne, Duvbo, 2, Blåa
+Duvbo, Sundbybergs centrum, 2, Blåa
+Sundbybergs centrum, Solna strand, 2, Blåa
+Solna strand, Huvudsta, 2, Blåa
+Huvudsta, Västra skogen, 2, Blåa
+Västra skogen, Stadshagen, 3, Blåa
+Stadshagen, Fridhemsplan, 2, Blåa
+Fridhemsplan, Rådhuset, 2, Blåa
+Rådhuset, T-centralen, 2, Blåa
+T-centralen, Kungsträdgården, 2, Blåa
+Solna station, Solna centrum, 2, Tvärbana
+Solna centrum, Solna business park, 2, Tvärbana
+Solna business park, Sundbybergs centrum, 3, Tvärbana
+Sundbybergs centrum, Bällsta bro, 2, Tvärbana
+Bällsta bro, Karlsbodavägen, 2, Tvärbana
+Karlsbodavägen, Norra Ulvsunda, 2, Tvärbana
+Norra Ulvsunda, Johannesfred, 3, Tvärbana
+Johannesfred, Alvik, 3, Tvärbana
+Alvik, Alviks strand, 1, Tvärbana
+Alviks strand, Stora essingen, 2, Tvärbana
+Stora essingen, Gröndal, 3, Tvärbana
+Gröndal, Trekanten, 2, Tvärbana
+Trekanten, Liljeholmen, 2, Tvärbana
+Liljeholmen, Årstadal, 3, Tvärbana
+Årstadal, Årstaberg, 2, Tvärbana
+Årstaberg, Årstafältet, 2, Tvärbana
+Årstafältet, Valla torg, 2, Tvärbana
+Valla torg, Linde, 2, Tvärbana
+Linde, Globen, 1, Tvärbana
+Globen, Gullmarsplan, 1, Tvärbana
+Gullmarsplan, Mårtensdal, 4, Tvärbana
+Mårtensdal, Luma, 2, Tvärbana
+Luma, Sickla kaj, 2, Tvärbana
+Sickla kaj, Sickla udde, 1, Tvärbana
+Sickla udde, Sickla, 1, Tvärbana
+Solna, Solna station, 5, Gång
+Mariatorget, Stockholms södra, 5, Gång
