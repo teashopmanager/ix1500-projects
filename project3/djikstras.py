@@ -114,7 +114,7 @@ def constrained_djikstras(graph, start, end, max_transfers=None, forbidden_line=
 
     # Kortaste  kända restid till varje state
 
-    distances = {start_state, 0}
+    distances = {start_state: 0}
 
     # Används för att återskapa vägen
     previous = {}
@@ -147,6 +147,10 @@ def constrained_djikstras(graph, start, end, max_transfers=None, forbidden_line=
 
             # Constraint 2: Max antal byten
             new_transfers = transfers
+
+            # Första linjen räknas ej som ett byte
+            if current_line is not None and line != current_line:
+                new_transfers += 1
 
             # Om vi har gjort för många byten, kasta den vägen
 
