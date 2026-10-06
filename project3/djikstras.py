@@ -103,11 +103,107 @@ def dijkstras(graph, start, end):
     # Returnera kortaste restid och själva vägen
     return distances[end], path
 
+def constrained_djikstras(graph, start, end, max_transfers=None, forbidden_line=None, required_station=None):
+
+    # Ett state består av: (station, nuvarande linje, antal byten, har besökt required station)
+    # Exempel ("Slussen", "Gröna", 1, True)
+
+    start_visited_required = (required_station is None or start == required_station)
+
+    start_state = (start, None, 0, start_visited_required)
+
+    # Kortaste  kända restid till varje state
+
+    distances = {start_state, 0}
+
+    # Används för att återskapa vägen
+    previous = {}
+
+    # Priority queue: (restid, station, linje, antal byten, besökt required state)
+    priority_queue = [(0, start, None, 0, start_visited_required)]
+
+    final_state = None
+
+    while priority_queue:
+        (current_distance, current_station, current_line, transfers, visited_required) = heapq.heappop(priority_queue)
+
+        current_state = (current_station, current_line, transfers, visited_required)
+
+        # Ignorera en gammal/sämre väg
+        if current_distance > distances[current_state]:
+            continue
+
+        # Vi får bara avsluta programmet om: 1, Vi når slutstationen 2, required_station är avstängd eller har besökts
+        if current_station == end and visited_required:
+            final_state = current_state
+            break
+
+        # Undersöker alla grannar (kanter) från nuvarande station
+        for neighbour, travel_time, line in grapf[current_station]:
+            # Constraint 1: Förbjuden linje
+
+            if forbidden_line is not None and line == forbidden_line:
+                continue
+
+            # Constraint 2: Max antal byten
+            new_transfers = transfers
+
+            # Om vi har gjort för många byten, kasta den vägen
+
+            if (max_transfers is not None and new_transfers > max_transfers):
+                continue
+
+            # Constraint 3: Måste besöka station
+            
+            new_visited_required = visited_required
+
+            if (required_station is not None and neighbour == required_station):
+                new_visited_required = True
+
+            # Nytt state efter att kanten har använts
+            new_state = (neighbour, line, new_transfers, new_visited_required)
+
+            new_distance = current_distance + travel_time
+
+            if (new_state not in distances or new_distance < distances[new_state]):
+                distances[new_state] = new_distance
+                previous[new_state] = current_state
+
+                heapq.heappush(priority_queue, (new_distance, neighbour, line, new_transfers, new_visited_required))
+
+    # Om ingen giltig väg hittas
+    if final_state is None:
+        return float ("inf"), [], 0
+
+    # Återskapa vägen
+    path = []
+
+    current_state = final_state
+
+    while current_state != start_state:
+        station, line, transfers, visited_required = current_state
+
+        path.append(station)
+
+        current_state = previous[current_state]
+
+    path.append(start)
+
+    path.reverse()
+
+    # Antal byten finns i final_state
+
+    total_transfers = final_state[2]
+
+    return distances[final_state], path, total_transfers
+
+#def reconstruct_path():
+
 def main():
 
     graph = load_graph("sl.csv")
 
-    start = "Upplands Väsby"
+    start = "Upplands väsby"
 
     end = "Liljeholmen"
 
@@ -120,6 +216,23 @@ def main():
         print("Kortaste restiden:", distance, "minuter")
         print("Kortaste väg:")
         print(" -> ".join(path))
+
+def main_con():
+    graph = load_graph("sl.csv")
+
+    start = "Upplands väsby"
+
+    end = "Liljeholmen"
+
+    distance, path, transfers = constrained_djikstras(graph, start, end, max_transfers=1, forbidden_line=None, required_station=None)
+
+    if distance == float("inf"):
+         print("Det finns ingen väg mellan stationerna")
+        
+    else:
+        print("Kortaste restiden:", distance, "minuter")
+        print("Kortaste väg:")
+        print(" -> ".join(path))        
 
 
 if __name__ == "__main__":
