@@ -139,7 +139,7 @@ def constrained_djikstras(graph, start, end, max_transfers=None, forbidden_line=
             break
 
         # Undersöker alla grannar (kanter) från nuvarande station
-        for neighbour, travel_time, line in grapf[current_station]:
+        for neighbour, travel_time, line in graph[current_station]:
             # Constraint 1: Förbjuden linje
 
             if forbidden_line is not None and line == forbidden_line:
