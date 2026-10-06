@@ -220,6 +220,7 @@ def main():
         print("Kortaste restiden:", distance, "minuter")
         print("Kortaste väg:")
         print(" -> ".join(path))
+    print("\n")
 
 def main_con():
     graph = load_graph("sl.csv")
@@ -228,7 +229,7 @@ def main_con():
 
     end = "Liljeholmen"
 
-    distance, path, transfers = constrained_djikstras(graph, start, end, max_transfers=1, forbidden_line=None, required_station=None)
+    distance, path, transfers = constrained_djikstras(graph, start, end, max_transfers=None, forbidden_line="Röda", required_station="Björkhagen")
 
     if distance == float("inf"):
          print("Det finns ingen väg mellan stationerna")
@@ -236,9 +237,10 @@ def main_con():
     else:
         print("Kortaste restiden:", distance, "minuter")
         print("Kortaste väg:")
-        print(" -> ".join(path))        
-
+        print(" -> ".join(path))
+    print("\n")
 
 if __name__ == "__main__":
+    main_con()
     main()
 
